@@ -60,6 +60,14 @@ abstract class Action extends \Magento\Backend\App\Action
      */
     protected $_fileFactory;
 
+    /**
+     * File Factory.
+     *
+     * @var \Magento\Framework\Serialize\Serializer\Json
+     */
+    
+    protected $json;
+
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         \Magiccart\Lookbook\Model\LookbookFactory $lookbookFactory,
@@ -69,12 +77,14 @@ abstract class Action extends \Magento\Backend\App\Action
         \Magento\Framework\View\Result\PageFactory $resultPageFactory,
         \Magento\Framework\View\Result\LayoutFactory $resultLayoutFactory,
         \Magento\Backend\Model\View\Result\ForwardFactory $resultForwardFactory,
+        \Magento\Framework\Serialize\Serializer\Json $json,        
         \Magento\Backend\Helper\Js $jsHelper
     ) {
         parent::__construct($context);
         $this->_coreRegistry = $coreRegistry;
         $this->_fileFactory = $fileFactory;
         $this->_jsHelper = $jsHelper;
+        $this->json = $json;
 
         $this->_resultPageFactory = $resultPageFactory;
         $this->_resultLayoutFactory = $resultLayoutFactory;

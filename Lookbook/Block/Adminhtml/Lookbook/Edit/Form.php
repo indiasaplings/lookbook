@@ -85,6 +85,14 @@ class Form extends \Magento\Backend\Block\Widget\Form\Generic
                 'required' => true,
             ]
         );
+        $fieldset->addField('description', 'textarea',
+            [
+                'label' => __('Description'),
+                'title' => __('Description'),
+                'name'  => 'description',
+                'required' => false,
+            ]
+        );
 
         $identifier = $fieldset->addField('identifier', 'text',
             [
@@ -124,6 +132,15 @@ class Form extends \Magento\Backend\Block\Widget\Form\Generic
                 <p class="nm"><small>Ex1: http://domain.com/contact</small></p>
                 <p class="nm"><small>Ex2: lookbook</small></p>
             ',
+            ]
+        );
+
+        $image = $fieldset->addField('pinicon', 'image',
+            [
+                'label' => __('Pin Icon'),
+                'title' => __('Pin Icon'),
+                'name'  => 'pinicon',
+                'required' => true,
             ]
         );
 

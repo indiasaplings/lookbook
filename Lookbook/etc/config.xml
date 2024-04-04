@@ -10,11 +10,36 @@
  * @@Function:
  */ -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
-	<default>
-	    <lookbook>
+    <default>
+        <lookbook>
             <general>
                 <enabled>1</enabled>
+                <topmenulink>1</topmenulink>
+                <menutext_link>Look Book</menutext_link>
+                <title>Look Book</title>
+                <router>inspirations</router>
+                <url_suffix>.html</url_suffix>
+                <hoverImage>0</hoverImage>
+                <keep>1</keep>
+                <button>1</button>
+                <layout>tab</layout>
+                <borderWidth>2</borderWidth>
+                <tabBorderColor>#ddd</tabBorderColor>
+                <contentBorderColor>#ddd</contentBorderColor>
+                <speed>0</speed>
+                <scroll>0</scroll>
+                <mobile>1</mobile>
+                <portrait>1</portrait>
+                <landscape>2</landscape>
+                <tablet>3</tablet>
+                <notebook>3</notebook>
+                <laptop>4</laptop>
+                <desktop>4</desktop>
+                <widescreen>5</widescreen>
+                <visible>5</visible>
+                <padding>25</padding>
+                <slide>0</slide>
             </general>
-	    </lookbook>
-	</default>
+        </lookbook>
+    </default>
 </config>

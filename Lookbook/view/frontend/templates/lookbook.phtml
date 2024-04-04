@@ -1,0 +1,202 @@
+<?php
+
+/**
+ * 
+ * @category: Magepow
+ * @Copyright (c) 2014 Magepow  (<https://www.magepow.com>)
+ * @authors: Magepow (<magepow<support@magepow.com>>)
+ * @date:    2021-04-27 13:43:22
+ * @license: <http://www.magepow.com/license-agreement>
+ * @github: <https://github.com/magepow> 
+ */
+?>
+
+<?php
+/**
+ * @var \Magiccart\Lookbook\Block\Lookbook $block
+ */
+$lookbooks  = $block->getLookbookCollection();
+$_helper = $this->helper('Magiccart\Lookbook\Helper\Data');
+$dataOption  = $_helper->getConfgGridSlider();
+$_hoverImage = $_helper->getConfigModule('general/hoverImage');
+$_grid = $_helper->getConfigModule('general/layout');
+if (!$_helper->getConfigModule('general/enabled')) return;
+?>
+<div class="description-lookbook">
+	<p class="description"><?= __($_helper->getConfigModule('general/description')) ?></p>
+</div>
+<dl class="lookbook-list" 
+<?php foreach ($dataOption as $key => $value) : ?> 
+	
+	data-<?php echo $key ?>='<?php echo $value ?>' 
+	
+<?php endforeach ?> data-mage-init='{"magiccartLookbook": {}}'>	
+
+	<?php foreach ($lookbooks as $lookbook) : ?>
+		<?php
+		if ($config = $lookbook->getData('config')) {
+			$configData  = $this->json->unserialize($config);
+			if(is_array($configData)) $lookbook->addData($configData);
+		}
+		
+		$uniqid     = uniqid();
+		$selector   = 'alo-lookbook-' . $uniqid; ?>
+		<?php if ($lookbook['options'] && $lookbook['options'] != '{}') : ?>
+			<?php
+			$imageLookbook =  $block->getPinImageUrl($lookbook->getImage());
+			$options =  $this->json->unserialize($lookbook['options'], true);
+			if(!isset($options['magic_pin'])){
+				continue;
+			}
+			$magic_pin  = $options['magic_pin'];
+			$productIds = array();
+
+			foreach ($magic_pin as $key => $item) {
+				if (isset($item['product_id'])) $productIds[$key] = $item['product_id'];
+				if ($key == 'canvas') {
+					$magic_pin['canvas']['src'] = $block->getPinImageUrl($lookbook->getImage());
+					$width_image = $magic_pin['canvas']['width'];
+				}
+			}
+			$image = 'category_page_grid';
+			$pos = $block->getPositioned();
+			$products = $block->getProductCollection($productIds);
+
+			$productsHtml = [];
+			foreach ($productIds as $key => $id) {
+				$_product = $products->getItemByColumnValue('entity_id', $id);
+				if ($_product) {
+					$priceHtml = $block->getProductPrice($_product);
+					$icon = '<span class="magic-marker-icon-bg">' . $priceHtml . '</span>';
+					$productImage = $block->getImage($_product, $image);
+					if ($pos != null) {
+						$position = ' style="left:' . $productImage->getWidth() . 'px;'
+							. 'top:' . $productImage->getHeight() . 'px;"';
+					}
+					$name = $block->escapeJsQuote($_product->getName(), '"');
+					$image_html = preg_replace('/alt=".*?"/', 'alt="'. $name .'"', $productImage->toHtml()); // fixed name have quotes
+					$classes = isset($magic_pin[$key]['classes']) ? $magic_pin[$key]['classes'] . 'info' :  'info';
+					$add_options = array(
+						'classes'       => $classes,
+						'marker_pin'    => $icon,
+						'markerSrc'     => $icon,
+						'product_title' => $_product->getName(),
+						'product_link'  => $_product->getProductUrl(),
+						'product_img'   => $block->getPinImageUrl('catalog/product' . $_product->getImage()),
+					);
+					$magic_pin[$key] = array_merge($magic_pin[$key], $add_options);
+					$productsHtml [] = array_merge($add_options, ['price_html' => $priceHtml]);
+				}
+			}
+
+			$show_img = true;
+			$show_price = true;
+			$pin_rand_id = 'magic_pin_' . $uniqid;
+			$data_pin = $this->json->serialize(array($pin_rand_id => $magic_pin));
+			$imageMarker = $lookbook->getData('marker');
+
+			?>
+			<dt class="<?php echo $selector ?> magepow-list-lookbook <?php echo ($_grid == 'tab') ? 'tab' : 'grid' ?>" id="lookbook-<?= $lookbook->getLookbookId() ?>" >
+				<?php 
+					/* echo $lookbook->getTitle() ? '<h3 class="title item">' . '<span>' . $lookbook->getTitle() . '</span>' . '</h3>' : '' */
+				?>
+				<div class="lookbook <?php echo $imageMarker ? 'has-marker' : ''?>">
+					<div class="magic-inner-wrap magic-pin-banner-wrap">
+					<script class="json-data-pin" type="application/json"><?php echo $data_pin ?></script>
+						<img class="magic_pin_pb_image" src="<?php echo $imageLookbook; ?>" data-easypin-id="<?php echo $pin_rand_id ?>" alt="<?php /* @escapeNotVerified */ echo $lookbook->getTitle() ?>" />
+						<div style="display:none;" class="magic-easypin-tpl">
+							<popover>
+								<div style="height:auto;" class="{[classes]}">
+									<div class="main-product-pin" <?php if (!$_hoverImage) : ?> style="display: none;" <?php endif; ?>>
+										<div class="product-pin-wrap">
+											<a title="{[product_title]}" href="{[product_link]}">
+												<div class="image-wrap"><img src="{[product_img]}" alt="{[product_title]}"></div>
+												<div class="product-pin-details">
+													<div class="title-wrap">
+														<h5>{[product_title]}</h5>
+													</div>
+													<div class="price-wrap">{[marker_pin]}</div>
+												</div>
+											</a>
+										</div>
+									</div>
+								</div>
+							</popover>
+							<marker class="marker">
+								<div>&nbsp;</div>
+							</marker>
+						</div>
+					</div>
+				</div>
+			</dt>
+			<dd class="product-list items lookbook-magepow <?php echo $selector ?>" id="lookbook-<?= $lookbook->getLookbookId() ?>-content">
+				<div class="lookbook-big-image lookbook <?php echo $imageMarker ? 'has-marker' : ''?>">
+					<div class="magic-inner-wrap magic-pin-banner-wrap lookbook-image">
+						<script class="json-data-pin" type="application/json"><?php echo $data_pin ?></script>
+						<img class="magic_pin_pb_image" src="<?php echo $imageLookbook; ?>" data-easypin-id="<?php echo $pin_rand_id ?>" alt="<?php /* @escapeNotVerified */ echo $lookbook->getTitle() ?>" />
+						<div style="display:none;" class="magic-easypin-tpl">
+							<popover>
+								<div style="height:auto;" class="{[classes]}">
+
+									<div class="main-product-pin">
+										<div class="product-pin-wrap">
+											<a title="<?= $_product->getName() ?>" href="<?= $_product->getProductUrl() ?>">
+												<div class="image-wrap"><img src="<?= $block->getPinImageUrl('catalog/product' . $_product->getImage()) ?>" alt="<?= $_product->getName() ?>"></div>
+												<div class="product-pin-details">
+													<div class="title-wrap">
+														<h5><?= $_product->getName() ?></h5>
+													</div>
+													<div class="price-wrap"><?= '<span class="magic-marker-icon-bg">' . $block->getProductPrice($_product) . '</span>' ?></div>
+												</div>
+
+											</a>
+										</div>
+									</div>
+
+								</div>
+							</popover>
+							<marker class="marker">
+								<div>&nbsp;</div>
+							</marker>
+						</div>
+					</div>
+				</div>
+				<div class="product items">
+					<?php echo $lookbook->getTitle() ? '<h2 class="title item">' . '<span>' . $lookbook->getTitle() . '</span>' . '</h2>' : '' ?>
+					<div class="description">
+						<p><?php echo $lookbook->getDescription() ?></p>
+					</div>
+					<div class="show-product-lookbook " data-mage-init='{"gridSlider": {}}' >
+					<div class="grid-slider" 			
+					<?php foreach ($configData as $key => $value): ?>
+							<?php echo ($key == 'marker' || $key == 'slide' || $key == 'block_position' || $key == 'display_to_category' || $key == 'parameters') ? '': "data-".$key."=".$value;?>
+					<?php endforeach; ?> >
+					<?php foreach($productsHtml as $product): ?>
+						<div class="prouct-show" >
+							<a href="<?= $product['product_link']; ?>">
+								<img class="product-image-lookbook" src="<?= $product['product_img']; ?>" title="<?= $product['product_title'] ?>" alt="<?= $product['product_title'] ?>">
+								<div class="price-wrap-lookbook"><?= $product['price_html'];?></div>
+								<span class="title"><?= $product['product_title'];?></span>
+							</a>
+						</div>
+				
+					<?php endforeach; ?>
+					</div>
+					</div>
+				</div>
+			</dd>
+			
+			<?php if($imageMarker): ?>
+			<style>.lookbook-list .<?php echo $selector ?> .lookbook .easypin-marker:before {background-image: url("<?php echo $block->getPinImageUrl($imageMarker);  ?>");}</style>
+			<?php endif; ?>
+		<?php endif; ?>
+	<?php endforeach; ?>
+</dl>
+
+<style type="text/css">
+	<?php if($_grid == 'tab'): ?>
+		.gridtab dt.magepow-list-lookbook.tab.is-active{
+			border-bottom: none;
+		}
+	<?php endif; ?>
+</style>

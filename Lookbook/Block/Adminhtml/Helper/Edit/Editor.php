@@ -25,15 +25,21 @@ class Editor extends \Magento\Framework\View\Element\Template // \Magento\Framew
     protected $_imageFactory;
 
     public $assetRepository;
-
+        /**
+     * @var \Magento\Framework\Serialize\Serializer\Json
+     */
+    public $json;
+    
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Framework\Image\AdapterFactory $imageFactory,
+        \Magento\Framework\Serialize\Serializer\Json $json,
         array $data = []
     ) {
         $this->_storeManager  = $context->getStoreManager();
         $this->assetRepository = $context->getAssetRepository();
         $this->_imageFactory = $imageFactory;
+        $this->json = $json;
         parent::__construct($context, $data);
     }
 

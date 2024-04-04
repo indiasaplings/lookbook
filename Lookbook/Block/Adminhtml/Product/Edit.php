@@ -70,10 +70,10 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
         // }
     }
 
-    protected function _isAllowedAction($resourceId)
-    {
-        return $this->_authorization->isAllowed($resourceId);
-    }
+    // protected function _isAllowedAction($resourceId)
+    // {
+    //     return $this->_authorization->isAllowed($resourceId);
+    // }
 
     /**
      * Retrieve the save and continue edit Url.

@@ -29,7 +29,12 @@ class Product extends \Magento\Catalog\Block\Product\AbstractProduct implements 
      */
     protected $_imageFactory;
 
-     /**
+    /**
+     * @var \Magento\Framework\Serialize\Serializer\Json
+     */
+    public $json;
+
+    /**
      * @var \Magento\Backend\Model\UrlInterface
      */
     protected $backendUrl;
@@ -38,8 +43,19 @@ class Product extends \Magento\Catalog\Block\Product\AbstractProduct implements 
 
     protected $_directory;
 
+    /**
+     * @var \Magento\Framework\DataObjectFactory
+     */
+    protected $objectFactory;
+
+    /**
+     * @var \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory
+     */
     protected $_productCollectionFactory;
 
+    /**
+     * @var \Magiccart\Lookbook\Model\LookbookFactory $lookbookFactory
+     */
     protected $_lookbook;
 
     protected $_typeId = '1';
@@ -52,17 +68,21 @@ class Product extends \Magento\Catalog\Block\Product\AbstractProduct implements 
     /**
      * @param Context $context
      * @param \Magento\Framework\Url\Helper\Data $urlHelper
+     * @param \Magento\Framework\Image\AdapterFactory $imageFactory
+     * @param \Magento\Framework\Serialize\Serializer\Json $json
      * @param \Magento\Backend\Model\UrlInterface $backendUrl
      * @param \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory
      * @param \Magento\Catalog\Model\Product\Visibility $catalogProductVisibility
-     * @param \Magiccart\Lookbook\Model\LookbookFactory
+     * @param \Magiccart\Lookbook\Model\LookbookFactory $lookbookFactory
      * @param array $data
      */
     public function __construct(
         \Magento\Catalog\Block\Product\Context $context,
         \Magento\Framework\Url\Helper\Data $urlHelper,
         \Magento\Framework\Image\AdapterFactory $imageFactory,
+        \Magento\Framework\Serialize\Serializer\Json $json,
         \Magento\Backend\Model\UrlInterface $backendUrl,
+        \Magento\Framework\DataObjectFactory $objectFactory,
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
         \Magento\Catalog\Model\Product\Visibility $catalogProductVisibility,
         \Magiccart\Lookbook\Model\LookbookFactory $lookbookFactory,
@@ -70,13 +90,15 @@ class Product extends \Magento\Catalog\Block\Product\AbstractProduct implements 
     ) {
         $this->urlHelper     = $urlHelper;
         $this->_imageFactory = $imageFactory;
+        $this->json          = $json;
         $this->backendUrl    = $backendUrl;
         $this->_filesystem   = $context->getFilesystem();
         $this->_directory    = $this->_filesystem->getDirectoryWrite(DirectoryList::MEDIA);
-
+        $this->objectFactory = $objectFactory;
         $this->_productCollectionFactory = $productCollectionFactory;
         $this->_catalogProductVisibility = $catalogProductVisibility;
         $this->lookbookFactory = $lookbookFactory;
+
         parent::__construct( $context, $data );
     }
 
@@ -94,18 +116,27 @@ class Product extends \Magento\Catalog\Block\Product\AbstractProduct implements 
 
     public function getLookbook()
     {
-        if($this->getData('lookbook')) $this->_lookbook = $this->getData('lookbook');
-        if($this->_lookbook) return $this->_lookbook;
-        $store = $this->_storeManager->getStore()->getStoreId();
-        $identifier = $this->getIdentifier();
-        $collection = $this->lookbookFactory->create()->getCollection()->addFieldToSelect('*')
-                        ->addFieldToFilter('identifier', $identifier)
-                        ->addFieldToFilter('type_id', $this->_typeId)
-                        ->addFieldToFilter('stores',array( array('finset' => 0), array('finset' => $store)))
-                        ->setPageSize(1);
-        $collection->getSelect()->order('order','ASC');
+        if($this->getData('lookbook')){
+            $this->_lookbook = $this->getData('lookbook');
+        }else {
+            $store = $this->_storeManager->getStore()->getStoreId();
+            $identifier = $this->getIdentifier();
+            $collection = $this->lookbookFactory->create()->getCollection()->addFieldToSelect('*')
+                            ->addFieldToFilter('identifier', $identifier)
+                            ->addFieldToFilter('type_id', $this->_typeId)
+                            ->addFieldToFilter('stores',array( array('finset' => 0), array('finset' => $store)))
+                            ->setPageSize(1);
+            $collection->getSelect()->order('order','ASC');
 
-        $this->_lookbook = $collection->getFirstItem();
+            $this->_lookbook = $collection->getFirstItem();
+        }
+
+        $config          = $this->_lookbook->getData('config');
+        if($config){
+            $config      = $this->json->unserialize($config);
+            if(is_array($config))$this->_lookbook = $this->_lookbook->addData($config);
+        }
+
         return  $this->_lookbook;
     }
 
@@ -122,13 +153,9 @@ class Product extends \Magento\Catalog\Block\Product\AbstractProduct implements 
 
     public function getProductCollection($producIds)
     {
-        $productCollection = $this->_productCollectionFactory->create()
-                                ->addAttributeToSelect('*')
-                                ->addAttributeToFilter('entity_id', array('in' => $producIds))
-                                ->addStoreFilter()
-                                ->addMinimalPrice()
-                                ->addFinalPrice()
-                                ->addTaxPercents();
+        $productCollection = $this->_productCollectionFactory->create();
+        $productCollection->addAttributeToSelect('*')
+                ->addAttributeToFilter('entity_id', array('in' => $producIds));
 
         return $productCollection;
      }
@@ -156,8 +183,9 @@ class Product extends \Magento\Catalog\Block\Product\AbstractProduct implements 
 
     public function getPinImageUrl($file)
     {
-       $resizedURL = $this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . $file;
-        return $resizedURL;
+        if($file) $file = $this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . $file;
+
+        return $file;
     }
     
     /**

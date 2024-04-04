@@ -9,7 +9,7 @@
  * @@Modify Date: 2018-06-18 19:17:55
  * @@Function:
  */ -->
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
         <title>Lookbook Tabs</title>
         <css src="Magiccart_Lookbook::css/select2.min.css"/>
@@ -29,6 +29,27 @@
         </referenceContainer>
         <referenceContainer name="content">
         <block class="Magiccart\Lookbook\Block\Adminhtml\Product\Edit" name="lookbook_edit"/>
+        </referenceContainer>
+
+        <referenceContainer name="left">
+            <block class="Magiccart\Lookbook\Block\Adminhtml\Product\Edit\Tab" name="lookbook_product_edit_tab">
+                <block class="Magiccart\Lookbook\Block\Adminhtml\Product\Edit\Tab\LookbookInfo" name="lookbook_edit_tab_info"/>
+                <action method="addTab">
+                    <argument name="name" xsi:type="string">lookbook_infomation</argument>
+                    <argument name="block" xsi:type="string">lookbook_edit_tab_info</argument>
+                </action>
+                <block class="Magiccart\Lookbook\Block\Adminhtml\Product\Edit\Tab\DisplayConditions" name="lookbook_edit_tab_displayconditions"/>
+                <action method="addTab">
+                    <argument name="name" xsi:type="string">lookbook_displayconditions</argument>
+                    <argument name="block" xsi:type="string">lookbook_edit_tab_displayconditions</argument>
+                </action>
+<!--                 <block class="Magiccart\Lookbook\Block\Adminhtml\Product\Edit\Tab\Content" name="content_list_lookbook_edit"/>
+                <action method="addTab">
+                    <argument name="name" xsi:type="string">content_slide_lookbook_product</argument>
+                    <argument name="block" xsi:type="string">content_list_lookbook_edit</argument>
+                </action> -->
+                
+            </block>
         </referenceContainer>
     </body>
 </page>

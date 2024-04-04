@@ -42,6 +42,7 @@ class InstallSchema implements InstallSchemaInterface
                 'Lookbook ID'
             )
             ->addColumn('title', Table::TYPE_TEXT, 255, ['nullable' => true], 'Title')
+            ->addColumn('description', Table::TYPE_TEXT, '2M', ['nullable' => true], 'Description')
             ->addColumn('identifier', Table::TYPE_TEXT, 255, ['nullable' => true, 'default' => null])
             ->addColumn('type_id', Table::TYPE_SMALLINT, null, ['nullable' => false, 'default' => '1'], 'Type')
             ->addColumn('link', Table::TYPE_TEXT, 255, ['nullable' => true], 'Link')

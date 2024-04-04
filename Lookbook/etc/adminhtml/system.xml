@@ -27,7 +27,109 @@
                     <label>Enabled</label>
                     <comment>Enabled frontend</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>               
+                </field> 
+                <field id="topmenulink" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Add Lookbook Link to Top Menu</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="menutext_link" translate="label comment" type="text" sortOrder="20"  showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Top Menu Link Text</label>
+                    <depends>
+                        <field id="topmenulink">1</field>
+                    </depends>
+                </field>
+                <field id="hoverImage" translate="label comment" type="select" sortOrder="30"  showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Hover maker show gird image</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                 <field id="keep" translate="label comment" type="select" sortOrder="40"  showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Do not use content transitions</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Select "Yes" if you don't want to use the toggle between showing or hiding the content.</comment>
+                </field>
+                <field id="speed" translate="label comment" type="text" sortOrder="45"  showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Speed time show/hide tab</label>
+                    <depends>
+                        <field id="keep">0</field>
+                    </depends>
+                    <comment>Unit in milliseconds Exp: 1000 = 1 seconds</comment>
+                </field> 
+                <field id="button" translate="label comment" type="select" sortOrder="50"  showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Show button close</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="scroll" translate="label comment" type="select" sortOrder="60"  showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Scroll lookbook block to top</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>works when "Layout" is Tab</comment>
+                </field> 
+                <field id="layout" translate="label comment" type="select" sortOrder="65"  showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label><![CDATA[Layout]]></label>
+                    <source_model>Magiccart\Lookbook\Model\Adminhtml\System\Config\Layout</source_model>
+                </field>
+                <field id="borderWidth" translate="label comment" type="text" sortOrder="66"  showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Border Container</label>
+                    <validate>required-entry validate-no-empty validate-number</validate>
+                </field>
+                <field id="tabBorderColor"  type="text" showInDefault="1" sortOrder="67" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Tab border color</label>
+                    <validate>jscolor {hash:true,refine:false}</validate>
+                </field>
+                <field id="contentBorderColor"  type="text" showInDefault="1" sortOrder="68" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Content border color</label>
+                    <validate>jscolor {hash:true,refine:false}</validate>
+                </field>
+                 <field id="padding" translate="label comment" type="text" sortOrder="70"  showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Padding Tab</label>
+                    <comment>Example: 10px 10px 10px 10px or 10px by order top right bottom left</comment>
+                </field>
+                 
+                 <field id="mobile" translate="label comment" type="select" sortOrder="90"  showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label><![CDATA[max-width 360: ]]></label>
+                    <comment><![CDATA[Number product show in screen ( Size <= 360 ) ]]></comment>
+                    <source_model>Magiccart\Lookbook\Model\Adminhtml\System\Config\Col</source_model>
+                </field>
+                <field id="portrait" translate="label comment" type="select" sortOrder="100"  showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label><![CDATA[max-width 479: ]]></label>
+                    <comment><![CDATA[Number product show in screen ( 360 < Size < 480 ) ]]></comment>
+                    <source_model>Magiccart\Lookbook\Model\Adminhtml\System\Config\Col</source_model>
+                </field>
+                <field id="landscape" translate="label comment" type="select" sortOrder="110"  showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label><![CDATA[max-width 576: ]]></label>
+                    <comment><![CDATA[Number product show in screen ( 480 <= Size < 576 ) ]]></comment>
+                    <source_model>Magiccart\Lookbook\Model\Adminhtml\System\Config\Col</source_model>
+                </field>
+                <field id="tablet" translate="label comment" type="select" sortOrder="120"  showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label><![CDATA[max-width 767: ]]></label>
+                    <comment><![CDATA[Number product show in screen ( 576 <= Size < 768 ) ]]></comment>
+                    <source_model>Magiccart\Lookbook\Model\Adminhtml\System\Config\Col</source_model>
+                </field>
+                <field id="notebook" translate="label comment" type="select" sortOrder="130"  showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label><![CDATA[max-width 991: ]]></label>
+                    <comment><![CDATA[Number product show in screen ( 768 <= Size < 992 ) ]]></comment>
+                    <source_model>Magiccart\Lookbook\Model\Adminhtml\System\Config\Col</source_model>
+                </field>
+                <field id="laptop" translate="label comment" type="select" sortOrder="140"  showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label><![CDATA[max-width 1199: ]]></label>
+                    <comment><![CDATA[Number product show in screen ( 992 <= Size < 1200 ) ]]></comment>
+                    <source_model>Magiccart\Lookbook\Model\Adminhtml\System\Config\Col</source_model>
+                </field>
+                <field id="desktop" translate="label comment" type="select" sortOrder="150"  showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label><![CDATA[max-width 1479: ]]></label>
+                    <comment><![CDATA[Number product show in screen ( 1200 <= Size < 1480 ) ]]></comment>
+                    <source_model>Magiccart\Lookbook\Model\Adminhtml\System\Config\Col</source_model>
+                </field>
+                <field id="widescreen" translate="label comment" type="select" sortOrder="160"  showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label><![CDATA[max-width 1920: ]]></label>
+                    <comment><![CDATA[Number product show in screen ( 1366 <= Size < 1920 ) ]]></comment>
+                    <source_model>Magiccart\Lookbook\Model\Adminhtml\System\Config\Col</source_model>
+                </field>
+                <field id="visible" translate="label comment" type="select" sortOrder="170"  showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label><![CDATA[min-width 1921: ]]></label>
+                    <comment><![CDATA[Number product show in screen ( Size >= 1920 ) ]]></comment>
+                    <source_model>Magiccart\Lookbook\Model\Adminhtml\System\Config\Col</source_model>
+                </field>           
             </group>
         </section>
     </system>

@@ -1,25 +1,19 @@
 <?php
+
 /**
- * Magiccart 
- * @category    Magiccart 
- * @copyright   Copyright (c) 2014 Magiccart (http://www.magiccart.net/) 
- * @license     http://www.magiccart.net/license-agreement.html
- * @Author: DOng NGuyen<nguyen@dvn.com>
- * @@Create Date: 2018-06-11 23:15:05
- * @@Modify Date: 2018-06-29 12:22:39
- * @@Function:
+ * @Author: nguyen
+ * @Date:   2021-06-15 09:26:37
+ * @Last Modified by:   nguyen
+ * @Last Modified time: 2021-06-15 09:30:35
  */
 
 namespace Magiccart\Lookbook\Model\Widget\Config;
 
 class ProductSlider implements \Magento\Framework\Option\ArrayInterface
 {
-
-	protected $scopeConfig;
 	protected $_lookbook;
 
 	public function __construct(
-		// \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
 		\Magiccart\Lookbook\Model\Lookbook $lookbook
 	)
 	{
@@ -28,14 +22,15 @@ class ProductSlider implements \Magento\Framework\Option\ArrayInterface
 
     public function toOptionArray()
     {
-		$lookbooks = $this->_lookbook->getCollection()->addFieldToFilter('type_id', '1');
-		$options = array();
+		$lookbooks = $this->_lookbook->getCollection()
+						->addFieldToFilter('type_id', '1')
+						->addFieldToFilter('status', '1');
+		$options = [];
 		foreach ($lookbooks as $item) {
-			$options[] = array(
-                            'label' => $item->getTitle(),
-                            'value' => $item->getIdentifier()
-				);
+			$label 	   = $item->getTitle() ? $item->getTitle() : $item->getIdentifier();
+			$options[] = ['value' => $item->getIdentifier(), 'label' => $label];
 		}
+
         return $options;
     }
 

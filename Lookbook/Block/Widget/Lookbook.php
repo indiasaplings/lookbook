@@ -12,7 +12,7 @@
 
 namespace Magiccart\Lookbook\Block\Widget;
 
-class Lookbook extends \Magento\Framework\View\Element\Template implements \Magento\Widget\Block\BlockInterface
+class Lookbook extends \Magento\Framework\View\Element\Template
 {
 
     protected $_storeManager;
